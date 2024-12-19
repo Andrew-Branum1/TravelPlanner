@@ -1,0 +1,38 @@
+# Build output
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+
+# User-specific files
+*.user
+*.suo
+
+# Visual Studio Code settings
+.vscode/
+.idea/
+.vs/
+
+# Logs
+*.log
+logs/
+*.tlog
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+
+# Database-related files
+*.mdf
+*.ldf
+*.db
+
+# Secret configuration files
+appsettings.*.json
+!appsettings.json  # Allow base config, exclude environment-specific configs
+
+# Publish output
+wwwroot/
+publish/

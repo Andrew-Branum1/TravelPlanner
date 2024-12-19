@@ -1,0 +1,10 @@
+{
+"SpaProxyServer": {
+"ServerUrl": "https://localhost:53087",
+"RedirectUrl": "",
+"LaunchCommand": "npm start",
+"WorkingDirectory": "C:\\Users\\Drew\\source\\repos\\TravelPlanner\\TravelPlanner.Server\\..\\travelplanner.client",
+"MaxTimeoutInSeconds": "120",
+"KeepRunning": "false"
+}
+}

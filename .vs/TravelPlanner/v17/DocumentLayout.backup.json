@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Drew\\source\\repos\\TravelPlanner\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{6002417D-6B6E-4595-8F4A-315585E24F29}|TravelPlanner.Server\\TravelPlanner.Server.csproj|c:\\users\\drew\\source\\repos\\travelplanner\\travelplanner.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6002417D-6B6E-4595-8F4A-315585E24F29}|TravelPlanner.Server\\TravelPlanner.Server.csproj|solutionrelative:travelplanner.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Drew\\source\\repos\\TravelPlanner\\TravelPlanner.Server\\Program.cs",
+              "RelativeDocumentMoniker": "TravelPlanner.Server\\Program.cs",
+              "ToolTip": "C:\\Users\\Drew\\source\\repos\\TravelPlanner\\TravelPlanner.Server\\Program.cs",
+              "RelativeToolTip": "TravelPlanner.Server\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-19T16:51:50.042Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
