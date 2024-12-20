@@ -21,8 +21,8 @@ export class AppComponent implements OnInit {
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
-    this.getWeatherForecasts();
-    this.getUsers(); // Example for multiple API requests
+    //this.getWeatherForecasts();
+    //this.getUsers(); // Example for multiple API requests
   }
 
   getWeatherForecasts() {

@@ -1,0 +1,46 @@
+<div class="filters">
+  <label>
+    Airline:
+    <input type="text" [(ngModel)]="filters.airline" (input)="applyFilters()" />
+  </label>
+  <label>
+    Origin:
+    <input type="text" [(ngModel)]="filters.origin" (input)="applyFilters()" />
+  </label>
+  <label>
+    Destination:
+    <input type="text" [(ngModel)]="filters.destination" (input)="applyFilters()" />
+  </label>
+  <label>
+    Max Price:
+    <input type="number" [(ngModel)]="filters.maxPrice" (input)="applyFilters()" />
+  </label>
+</div>
+
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Airline</th>
+        <th>Origin</th>
+        <th>Destination</th>
+        <th>Departure</th>
+        <th>Arrival</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let flight of flights">
+        <td>{{ flight.airline }}</td>
+        <td>{{ flight.origin }}</td>
+        <td>{{ flight.destination }}</td>
+        <td>{{ flight.departureTime }}</td>
+        <td>{{ flight.arrivalTime }}</td>
+        <td>{{ flight.price | currency }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<pagination-controls (pageChange)="onPageChange($event)"></pagination-controls>

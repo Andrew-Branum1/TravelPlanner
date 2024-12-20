@@ -1,0 +1,56 @@
+.flight-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px auto;
+  max-width: 90%;
+}
+
+.filters {
+  display: flex; /* Arrange filters horizontally */
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  justify-content: center; /* Center filters within the container */
+  gap: 15px; /* Add spacing between filters */
+  margin-bottom: 20px; /* Add spacing below filters */
+}
+
+  .filters label {
+    display: flex; /* Arrange label and input vertically */
+    flex-direction: column;
+    font-size: 14px; /* Adjust label font size */
+    align-items: flex-start; /* Align text to the left */
+  }
+
+  .filters input {
+    padding: 5px; /* Add padding to inputs for better usability */
+    border: 1px solid #ccc; /* Add a border */
+    border-radius: 4px; /* Round the corners */
+    width: 200px; /* Set a consistent width for inputs */
+  }
+
+/* Center the table on the page */
+.table-container {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically if needed */
+  margin: 20px auto; /* Add spacing around the container */
+  max-width: 90%; /* Limit the container width */
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 800px;
+  text-align: center; /* Center the text inside the table */
+}
+
+  table th,
+  table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+  }
+
+thead {
+  background-color: #f4f4f4;
+}
