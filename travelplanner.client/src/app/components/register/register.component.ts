@@ -1,13 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
+import { NgForm } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { FormControl, FormGroupDirective } from '@angular/forms';
+
+@Injectable()
+export class CustomErrorStateMatcher implements ErrorStateMatcher {
+  constructor(private component: RegisterComponent) { }
+
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(
+      control &&
+      (control.invalid || this.component.passwordMismatch) &&
+      (control.touched || isSubmitted)
+    );
+  }
+}
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  styleUrls: ['./register.component.css'],
+  providers: [
+    { provide: ErrorStateMatcher, useClass: CustomErrorStateMatcher }
+  ]
 })
+
 export class RegisterComponent {
   username = '';
   email = '';
@@ -16,20 +37,26 @@ export class RegisterComponent {
   errorMessage = '';
   isLoading = false;
   hidePassword = true;
+  passwordMismatch = false;
+  customErrorStateMatcher: ErrorStateMatcher;
 
   constructor(
     private authService: AuthService,
     private notificationService: NotificationService,
     private router: Router
-  ) { }
+  ) { this.customErrorStateMatcher = new CustomErrorStateMatcher(this); }
 
-  onSubmit(event: Event): void {
-    event.preventDefault();
-    if (this.password !== this.confirmPassword) {
-      this.notificationService.showError('Passwords do not match.');
+  onSubmit(): void {
+    this.passwordMismatch = this.password !== this.confirmPassword;
+    if (this.passwordMismatch) {
       return;
     }
+
     this.register();
+  }
+
+  checkPasswordMismatch(): void {
+    this.passwordMismatch = this.password !== this.confirmPassword;
   }
 
   register(): void {

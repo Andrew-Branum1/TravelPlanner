@@ -1,44 +1,96 @@
-<div class="register-container">
-  <h1>Register</h1>
-  <form (submit)="onSubmit($event)">
-    <mat-form-field appearance="outline">
-      <mat-label>Username</mat-label>
-      <input matInput [(ngModel)]="username" name="username" required />
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Email</mat-label>
-      <input matInput [(ngModel)]="email" name="email" required type="email" />
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Password</mat-label>
-      <input matInput
-             [type]="hidePassword ? 'password' : 'text'"
-             [(ngModel)]="password"
-             name="password"
-             required />
-      <button mat-icon-button
-              matSuffix
-              (click)="togglePasswordVisibility()"
-              type="button">
-        <mat-icon>{{ hidePassword ? 'visibility' : 'visibility_off' }}</mat-icon>
-      </button>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Confirm Password</mat-label>
-      <input matInput
-             [type]="hidePassword ? 'password' : 'text'"
-             [(ngModel)]="confirmPassword"
-             name="confirmPassword"
-             required />
-    </mat-form-field>
-    <div *ngIf="errorMessage" class="error-message">
-      {{ errorMessage }}
-    </div>
-    <div *ngIf="isLoading" class="loading">
-      <mat-spinner diameter="30"></mat-spinner>
-    </div>
-    <button mat-raised-button color="primary" type="submit" [disabled]="isLoading">
-      Register
-    </button>
-  </form>
+<div class="auth-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Register</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+        <!-- Username Field -->
+        <mat-form-field appearance="fill">
+          <mat-label>Username</mat-label>
+          <input matInput
+                 [(ngModel)]="username"
+                 name="username"
+                 required
+                 #usernameInput="ngModel" />
+          <mat-error *ngIf="usernameInput.invalid && usernameInput.touched">
+            Username is required
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Email Field -->
+        <mat-form-field appearance="fill">
+          <mat-label>Email</mat-label>
+          <input matInput
+                 type="email"
+                 [(ngModel)]="email"
+                 name="email"
+                 required
+                 email
+                 #emailInput="ngModel" />
+          <mat-error *ngIf="emailInput.touched">
+            <span *ngIf="emailInput.errors?.['required']">Email is required</span>
+            <span *ngIf="emailInput.errors?.['email']">Invalid email format</span>
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Password Field -->
+        <mat-form-field appearance="fill">
+          <mat-label>Password</mat-label>
+          <input matInput
+                 [type]="hidePassword ? 'password' : 'text'"
+                 [(ngModel)]="password"
+                 name="password"
+                 required
+                 minlength="6"
+                 #passwordInput="ngModel" />
+          <button mat-icon-button
+                  matSuffix
+                  (click)="togglePasswordVisibility()"
+                  type="button">
+            <mat-icon>{{ hidePassword ? 'visibility' : 'visibility_off' }}</mat-icon>
+          </button>
+          <mat-error *ngIf="passwordInput.touched">
+            <span *ngIf="passwordInput.errors?.['required']">Password is required</span>
+            <span *ngIf="passwordInput.errors?.['minlength']">Password must be at least 6 characters</span>
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Confirm Password Field -->
+        <mat-form-field appearance="fill">
+          <mat-label>Confirm Password</mat-label>
+          <input matInput
+                 [type]="hidePassword ? 'password' : 'text'"
+                 [(ngModel)]="confirmPassword"
+                 name="confirmPassword"
+                 required
+                 #confirmPasswordInput="ngModel"
+                 (ngModelChange)="checkPasswordMismatch()" />
+          <mat-error *ngIf="confirmPasswordInput.touched && (confirmPasswordInput.errors?.['required'] || passwordMismatch)">
+            <span *ngIf="confirmPasswordInput.errors?.['required']">Confirm password is required</span>
+            <span *ngIf="!confirmPasswordInput.errors?.['required'] && passwordMismatch">Passwords do not match</span>
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Error Message -->
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+
+        <!-- Submit Button -->
+        <button mat-raised-button
+                color="primary"
+                type="submit"
+                [disabled]="isLoading || registerForm.invalid || passwordMismatch">
+          Register
+        </button>
+
+        <!-- Navigation Link -->
+        <div class="auth-links">
+          <span>Already have an account?</span>
+          <a routerLink="/login">Login here</a>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
 </div>

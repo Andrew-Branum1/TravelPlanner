@@ -7,7 +7,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FlightComponent } from './components/flight/flight.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
@@ -24,6 +24,9 @@ import { ErrorHandler } from '@angular/core';
 import { GlobalErrorHandler } from './services/global-error-handler';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RegisterComponent } from './components/register/register.component';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatCardModule } from '@angular/material/card'; // Import MatCardModule
+
 
 
 @NgModule({
@@ -38,7 +41,7 @@ import { RegisterComponent } from './components/register/register.component';
     BrowserModule, HttpClientModule,
     AppRoutingModule, FormsModule, BrowserAnimationsModule, MatTableModule,
     MatPaginatorModule,
-    MatSortModule, MatFormField, MatFormFieldModule, MatButtonModule, MatInputModule, MatProgressSpinnerModule, MatIconModule, MatToolbarModule, MatSnackBarModule
+    MatSortModule, MatFormField, MatFormFieldModule, MatButtonModule, MatInputModule, MatProgressSpinnerModule, MatIconModule, MatToolbarModule, MatSnackBarModule, FlexLayoutModule, MatCardModule, ReactiveFormsModule
 
   ],
   providers: [
