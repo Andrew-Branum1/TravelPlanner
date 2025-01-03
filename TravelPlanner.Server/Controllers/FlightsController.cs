@@ -46,18 +46,16 @@ namespace TravelPlanner.Server.Controllers
 
             // Pagination
             var totalItems = query.Count();
-            var flights = query.Skip((queryParams.Page - 1) * queryParams.PageSize).Take(queryParams.PageSize).ToList();
+            var skip = (queryParams.Page - 1) * queryParams.PageSize;
+            var flights = query
+                .Skip(skip)
+                .Take(queryParams.PageSize)
+                .ToList();
+            Console.WriteLine($"Offset: {skip}, Fetch: {queryParams.PageSize}");
 
-            // Response
-            var response = new
-            {
-                TotalItems = totalItems,
-                Page = queryParams.Page,
-                PageSize = queryParams.PageSize,
-                Flights = flights
-            };
 
-            return Ok(response);
+            return Ok(new { totalItems, flights });
+
         }
     }
 

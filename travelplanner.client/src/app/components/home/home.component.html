@@ -1,0 +1,13 @@
+<mat-toolbar color="primary">
+  <span>Travel Planner</span>
+  <button mat-button routerLink="/login">Login</button>
+  <button mat-button routerLink="/register">Register</button>
+  <button mat-button (click)="logout()">Logout</button>
+
+</mat-toolbar>
+
+<div class="home-content">
+  <h1>Welcome to Travel Planner</h1>
+  <p>Plan your next journey effortlessly.</p>
+  <button mat-raised-button color="accent" routerLink="/flights">Explore Flights</button>
+</div>

@@ -1,0 +1,32 @@
+<div class="login-container">
+  <h1>Login</h1>
+  <form (submit)="onSubmit($event)">
+    <mat-form-field appearance="outline">
+      <mat-label>Username</mat-label>
+      <input matInput [(ngModel)]="username" name="username" required />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Password</mat-label>
+      <input matInput
+             [type]="hidePassword ? 'password' : 'text'"
+             [(ngModel)]="password"
+             name="password"
+             required />
+      <button mat-icon-button
+              matSuffix
+              (click)="togglePasswordVisibility()"
+              type="button">
+        <mat-icon>{{ hidePassword ? 'visibility' : 'visibility_off' }}</mat-icon>
+      </button>
+    </mat-form-field>
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+    <div *ngIf="isLoading" class="loading">
+      <mat-spinner diameter="30"></mat-spinner>
+    </div>
+    <button mat-raised-button color="primary" type="submit" [disabled]="isLoading">
+      Login
+    </button>
+  </form>
+</div>

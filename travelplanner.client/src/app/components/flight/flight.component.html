@@ -1,46 +1,63 @@
 <div class="filters">
-  <label>
-    Airline:
-    <input type="text" [(ngModel)]="filters.airline" (input)="applyFilters()" />
-  </label>
-  <label>
-    Origin:
-    <input type="text" [(ngModel)]="filters.origin" (input)="applyFilters()" />
-  </label>
-  <label>
-    Destination:
-    <input type="text" [(ngModel)]="filters.destination" (input)="applyFilters()" />
-  </label>
-  <label>
-    Max Price:
-    <input type="number" [(ngModel)]="filters.maxPrice" (input)="applyFilters()" />
-  </label>
+  <mat-form-field>
+    <mat-label>Origin</mat-label>
+    <input matInput [(ngModel)]="filters.origin" placeholder="Search by Origin" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Destination</mat-label>
+    <input matInput [(ngModel)]="filters.destination" placeholder="Search by Destination" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Airline</mat-label>
+    <input matInput [(ngModel)]="filters.airline" placeholder="Search by Airline" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Max Price</mat-label>
+    <input matInput type="number" [(ngModel)]="filters.maxPrice" placeholder="Enter Max Price" />
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" (click)="applyFilters()">Search</button>
 </div>
 
+
 <div class="table-container">
-  <table>
-    <thead>
-      <tr>
-        <th>Airline</th>
-        <th>Origin</th>
-        <th>Destination</th>
-        <th>Departure</th>
-        <th>Arrival</th>
-        <th>Price</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let flight of flights">
-        <td>{{ flight.airline }}</td>
-        <td>{{ flight.origin }}</td>
-        <td>{{ flight.destination }}</td>
-        <td>{{ flight.departureTime }}</td>
-        <td>{{ flight.arrivalTime }}</td>
-        <td>{{ flight.price | currency }}</td>
-      </tr>
-    </tbody>
+  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+    <!-- Define table columns -->
+    <ng-container matColumnDef="airline">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Airline </th>
+      <td mat-cell *matCellDef="let flight"> {{ flight.airline }} </td>
+    </ng-container>
+    <ng-container matColumnDef="origin">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Origin </th>
+      <td mat-cell *matCellDef="let flight"> {{ flight.origin }} </td>
+    </ng-container>
+    <ng-container matColumnDef="destination">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Destination </th>
+      <td mat-cell *matCellDef="let flight"> {{ flight.destination }} </td>
+    </ng-container>
+    <ng-container matColumnDef="departureTime">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Departure </th>
+      <td mat-cell *matCellDef="let flight"> {{ flight.departureTime | date }} </td>
+    </ng-container>
+    <ng-container matColumnDef="arrivalTime">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Arrival </th>
+      <td mat-cell *matCellDef="let flight"> {{ flight.arrivalTime | date }} </td>
+    </ng-container>
+    <ng-container matColumnDef="price">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Price </th>
+      <td mat-cell *matCellDef="let flight"> {{ flight.price | currency }} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 </div>
 
-
-<pagination-controls (pageChange)="onPageChange($event)"></pagination-controls>
+<mat-paginator [length]="totalItems"
+               [pageSize]="pageSize"
+               [pageSizeOptions]="[5, 10, 25, 50]"
+               (page)="onPageChange($event)">
+</mat-paginator>

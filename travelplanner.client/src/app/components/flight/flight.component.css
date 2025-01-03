@@ -54,3 +54,13 @@ table {
 thead {
   background-color: #f4f4f4;
 }
+
+.paginator-container {
+  display: flex;
+  justify-content: center; /* Center-align paginator */
+  margin-top: 20px; /* Add spacing between table and paginator */
+}
+
+.mat-paginator {
+  width: auto; /* Let paginator adjust to its content */
+}

@@ -1,0 +1,9 @@
+.home-content {
+  text-align: center;
+  margin-top: 50px;
+}
+
+mat-toolbar {
+  display: flex;
+  justify-content: space-between;
+}

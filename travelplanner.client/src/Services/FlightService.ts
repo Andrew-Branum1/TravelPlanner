@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, catchError, of } from 'rxjs';
 import { Flight } from '../Models/Flight';
 import { environment } from '../environments/environment';
 
@@ -12,22 +12,17 @@ export class FlightService {
 
   constructor(private http: HttpClient) { }
 
-  getFlights(
-    filters: { airline?: string; origin?: string; destination?: string; maxPrice?: number } = {},
-    sort: { sortBy?: string; sortDirection?: string } = { sortBy: 'departureTime', sortDirection: 'asc' },
-    pagination: { page?: number; pageSize?: number } = { page: 1, pageSize: 5 }
-  ): Observable<any> {
+  getFlights(page: number, pageSize: number, filters: { airline?: string; origin?: string; destination?: string; maxPrice?: number }): Observable<any> {
     let params = new HttpParams()
-      .set('page', pagination.page?.toString() || '1')
-      .set('pageSize', pagination.pageSize?.toString() || '5')
-      .set('sortBy', sort.sortBy || 'departureTime')
-      .set('sortDirection', sort.sortDirection || 'asc');
+      .set('page', page.toString())
+      .set('pageSize', pageSize.toString());
 
     if (filters.airline) params = params.set('airline', filters.airline);
     if (filters.origin) params = params.set('origin', filters.origin);
     if (filters.destination) params = params.set('destination', filters.destination);
     if (filters.maxPrice) params = params.set('maxPrice', filters.maxPrice.toString());
 
-    return this.http.get<any>(this.baseUrl, { params });
+    return this.http.get<any>(`${this.baseUrl}`, { params });
   }
+
 }
