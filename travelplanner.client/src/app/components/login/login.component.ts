@@ -3,6 +3,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
+import { TokenService } from '../../services/token.service';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,7 @@ export class LoginComponent {
   isLoading = false;
   hidePassword = true;
 
-  constructor(private notificationService: NotificationService, private authService: AuthService, private router: Router, private route: ActivatedRoute) { }
+  constructor(private notificationService: NotificationService, private authService: AuthService, private tokenService: TokenService, private router: Router, private route: ActivatedRoute) { }
 
   onSubmit(event: Event): void {
     event.preventDefault();
@@ -28,7 +29,7 @@ export class LoginComponent {
     this.authService.login(this.username, this.password).subscribe({
       next: (response) => {
         this.notificationService.showSuccess('Login successful!');
-        this.authService.setToken(response.token);
+        this.tokenService.setToken(response.token);
         const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
         this.router.navigate([returnUrl]);
         this.isLoading = false;
