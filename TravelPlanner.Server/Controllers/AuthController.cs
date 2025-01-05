@@ -4,102 +4,43 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using TravelPlanner.Server.Data; 
+using TravelPlanner.Server.Data;
+using TravelPlanner.Server.DTO;
 using TravelPlanner.Server.Models;
+using TravelPlanner.Server.Services;
+using TravelPlanner.Server.Services.Interfaces;
 
 [ApiController]
 [Route("api/auth")]
 public class AuthController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IAuthService _authService;
+    private readonly IUserService _userService;
+    private readonly IEmailService _emailService;
 
-    public AuthController(ApplicationDbContext context)
+    public AuthController(IAuthService authService)
     {
-        _context = context; // Inject the database context
+        _authService = authService;
     }
+
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
-        if (string.IsNullOrWhiteSpace(loginDto.Username) || string.IsNullOrWhiteSpace(loginDto.Password))
-        {
-            return BadRequest(new { message = "Username and password are required." });
-        }
-
-        // Retrieve user by username
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == loginDto.Username);
+        var user = await _authService.AuthenticateUserAsync(loginDto.Username, loginDto.Password);
         if (user == null)
-        {
             return Unauthorized(new { message = "Invalid username or password." });
-        }
 
-        // Verify password
-        if (!BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
-        {
-            return Unauthorized(new { message = "Invalid username or password." });
-        }
-
-        // Generate JWT token
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes("YourVeryLongSuperSecureSecretKey123!"); // Store securely
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, user.Username) }),
-            Expires = DateTime.UtcNow.AddHours(1),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-        };
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-
-        return Ok(new { token = tokenHandler.WriteToken(token) });
+        var token = _authService.GenerateJwtToken(user);
+        return Ok(new { token });
     }
+
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
     {
-        if (string.IsNullOrWhiteSpace(registerDto.Username) ||
-            string.IsNullOrWhiteSpace(registerDto.Password) ||
-            string.IsNullOrWhiteSpace(registerDto.Email))
-        {
-            return BadRequest(new { message = "All fields are required." });
-        }
-
-        // Check if username or email already exists
-        var existingUser = await _context.Users
-            .FirstOrDefaultAsync(u => u.Username == registerDto.Username || u.Email == registerDto.Email);
-
-        if (existingUser != null)
-        {
-            return Conflict(new { message = "Username or Email already exists." });
-        }
-
-        // Hash the password
-        var passwordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password);
-
-        // Create new user
-        var user = new User
-        {
-            Username = registerDto.Username,
-            Email = registerDto.Email,
-            PasswordHash = passwordHash
-        };
-
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
+        var success = await _authService.RegisterUserAsync(registerDto);
+        if (!success)
+            return Conflict(new { message = "Username or email already exists." });
 
         return Ok(new { message = "Registration successful." });
     }
-
-
-}
-
-public class LoginDto
-{
-    public string Username { get; set; }
-    public string Password { get; set; }
-}
-
-// DTO for registration
-public class RegisterDto
-{
-    public string Username { get; set; }
-    public string Email { get; set; }
-    public string Password { get; set; }
 }

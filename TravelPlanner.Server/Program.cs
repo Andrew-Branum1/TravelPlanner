@@ -5,6 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TravelPlanner.Server.Data;
 using TravelPlanner.Server.Filters;
+using TravelPlanner.Server.Services.Interfaces;
+using TravelPlanner.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,6 +64,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = false
         };
     });
+
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+
 
 
 builder.Logging.ClearProviders();

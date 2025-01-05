@@ -25,7 +25,10 @@ import { GlobalErrorHandler } from './services/global-error-handler';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RegisterComponent } from './components/register/register.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { MatCardModule } from '@angular/material/card'; // Import MatCardModule
+import { MatCardModule } from '@angular/material/card';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import { ConfirmResetPasswordComponent } from './components/confirm-reset-password/confirm-reset-password.component'; // Import MatCardModule
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 
 
@@ -35,13 +38,15 @@ import { MatCardModule } from '@angular/material/card'; // Import MatCardModule
     FlightComponent,
     HomeComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    ResetPasswordComponent,
+    ConfirmResetPasswordComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,
     AppRoutingModule, FormsModule, BrowserAnimationsModule, MatTableModule,
     MatPaginatorModule,
-    MatSortModule, MatFormField, MatFormFieldModule, MatButtonModule, MatInputModule, MatProgressSpinnerModule, MatIconModule, MatToolbarModule, MatSnackBarModule, FlexLayoutModule, MatCardModule, ReactiveFormsModule
+    MatSortModule, MatFormField, MatFormFieldModule, MatButtonModule, MatInputModule, MatProgressSpinnerModule, MatIconModule, MatToolbarModule, MatSnackBarModule, FlexLayoutModule, MatCardModule, ReactiveFormsModule, MatProgressBarModule
 
   ],
   providers: [

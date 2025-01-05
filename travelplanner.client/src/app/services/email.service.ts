@@ -6,30 +6,13 @@ import { TokenService } from './token.service';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
-  private readonly apiUrl = '/api/auth';
+export class EmailService {
   private readonly emailUrl = '/api/emails';
 
   constructor(private http: HttpClient, private tokenService: TokenService) { }
 
-  login(username: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, { username, password });
-  }
-
-  register(username: string, email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, { username, email, password });
-  }
-
-  logout(): void {
-    this.tokenService.removeToken();
-  }
-
-  isAuthenticated(): boolean {
-    return !this.tokenService.isTokenExpired();
-  }
-
   resetPassword(email: string): Observable<any> {
-    return this.http.post(`${this.emailUrl}/reset-password`, { email });
+    return this.http.post(`${this.emailUrl}/send-reset-password`, { email });
   }
 
   confirmResetPassword(email: string, token: string, newPassword: string): Observable<any> {
