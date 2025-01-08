@@ -1,0 +1,11 @@
+/* layout.component.css */
+mat-toolbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 16px;
+}
+
+.home-content {
+  text-align: center;
+  margin: 20px;
+}

@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { environment } from '../environments/environment';
+import { Router, NavigationEnd } from '@angular/router';
+import { AuthService } from './services/auth.service';
 
 interface WeatherForecast {
   date: string;
@@ -18,33 +18,15 @@ export class AppComponent implements OnInit {
   public forecasts: WeatherForecast[] = [];
   public users: any[] = []; // Example for additional endpoint
 
-  constructor(private http: HttpClient) { }
+  constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit() {
-    //this.getWeatherForecasts();
-    //this.getUsers(); // Example for multiple API requests
-  }
-
-  getWeatherForecasts() {
-    this.http.get<WeatherForecast[]>(`${environment.apiUrl}/weatherforecast`).subscribe(
-      (result) => {
-        this.forecasts = result;
-      },
-      (error) => {
-        console.error(error);
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        const isAuthenticated = this.authService.isAuthenticated();
+        this.authService.isAuthenticatedSubject.next(isAuthenticated);
       }
-    );
-  }
-
-  getUsers() {
-    this.http.get<any[]>(`${environment.apiUrl}/users`).subscribe(
-      (result) => {
-        this.users = result;
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
+    });
   }
 
   title = 'travelplanner.client';

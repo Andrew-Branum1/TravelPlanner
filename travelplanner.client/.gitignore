@@ -36,6 +36,7 @@ yarn-error.log
 !.vscode/extensions.json
 .history/*
 .vs/*
+.vs
 
 # Miscellaneous
 /.angular/cache

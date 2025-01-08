@@ -43,4 +43,21 @@ public class AuthController : ControllerBase
 
         return Ok(new { message = "Registration successful." });
     }
+
+    [HttpGet("profile")]
+    public IActionResult GetProfile()
+    {
+        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(token);
+
+        var username = jwtToken.Claims.First(claim => claim.Type == ClaimTypes.Name)?.Value;
+        if (string.IsNullOrEmpty(username))
+        {
+            return Unauthorized(new { message = "Invalid token." });
+        }
+
+        return Ok(new { username });
+    }
+
 }

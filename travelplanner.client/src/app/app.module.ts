@@ -29,6 +29,7 @@ import { MatCardModule } from '@angular/material/card';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { ConfirmResetPasswordComponent } from './components/confirm-reset-password/confirm-reset-password.component'; // Import MatCardModule
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { LayoutComponent } from './components/layout/layout.component';
 
 
 
@@ -40,7 +41,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     LoginComponent,
     RegisterComponent,
     ResetPasswordComponent,
-    ConfirmResetPasswordComponent
+    ConfirmResetPasswordComponent,
+    LayoutComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,
