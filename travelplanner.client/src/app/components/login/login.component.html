@@ -4,7 +4,7 @@
       <mat-card-title>Login</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <form (ngSubmit)="onSubmit($event)" #loginForm="ngForm">
+      <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
         <mat-form-field appearance="fill">
           <mat-label>Username</mat-label>
           <input matInput [(ngModel)]="username" name="username" required />

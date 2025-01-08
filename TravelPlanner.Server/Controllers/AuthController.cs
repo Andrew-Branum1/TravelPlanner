@@ -15,11 +15,11 @@ using TravelPlanner.Server.Services.Interfaces;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
-    private readonly IUserService _userService;
-    private readonly IEmailService _emailService;
+    private readonly IWebHostEnvironment _env;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, IWebHostEnvironment env)
     {
+        _env = env;
         _authService = authService;
     }
 
@@ -31,7 +31,18 @@ public class AuthController : ControllerBase
             return Unauthorized(new { message = "Invalid username or password." });
 
         var token = _authService.GenerateJwtToken(user);
-        return Ok(new { token });
+
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = _env.IsProduction(), // Use secure cookies in production
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTime.UtcNow.AddHours(1)
+        };
+
+        Response.Cookies.Append("authToken", token, cookieOptions);
+
+        return Ok(new { message = "Login successful." });
     }
 
     [HttpPost("register")]
@@ -44,20 +55,29 @@ public class AuthController : ControllerBase
         return Ok(new { message = "Registration successful." });
     }
 
-    [HttpGet("profile")]
-    public IActionResult GetProfile()
+    [HttpPost("logout")]
+    public IActionResult Logout()
     {
-        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-        var handler = new JwtSecurityTokenHandler();
-        var jwtToken = handler.ReadJwtToken(token);
-
-        var username = jwtToken.Claims.First(claim => claim.Type == ClaimTypes.Name)?.Value;
-        if (string.IsNullOrEmpty(username))
-        {
-            return Unauthorized(new { message = "Invalid token." });
-        }
-
-        return Ok(new { username });
+        Response.Cookies.Delete("authToken");
+        return Ok(new { message = "Logout successful." });
     }
 
+
+    [HttpGet("authenticated")]
+    public IActionResult GetAuthenticated()
+    {
+        if (Request.Cookies.ContainsKey("authToken"))
+        {
+            var token = Request.Cookies["authToken"];
+            Console.WriteLine($"authToken received: {token}");
+        }
+        else
+        {
+            Console.WriteLine("No authToken cookie found.");
+        }
+
+        return User?.Identity?.IsAuthenticated == true
+            ? Ok(new { Username = User.Identity.Name })
+            : Unauthorized(new { message = "Unauthorized access." });
+    }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { TokenService } from './token.service';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -10,37 +10,46 @@ export class AuthService {
   private readonly apiUrl = '/api/auth';
   private readonly emailUrl = '/api/emails';
 
-  public isAuthenticatedSubject!: BehaviorSubject<boolean>; // Declare without immediate initialization
-  isAuthenticated$!: Observable<boolean>;
+  private isAuthenticatedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public isAuthenticated$: Observable<boolean> = this.isAuthenticatedSubject.asObservable();
 
-  constructor(private http: HttpClient, private tokenService: TokenService) {
-    // Initialize the BehaviorSubject with the token validity
-    const isAuthenticated = this.isTokenValid();
-    this.isAuthenticatedSubject = new BehaviorSubject<boolean>(isAuthenticated);
-    this.isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
+
+  constructor(private http: HttpClient) {
+    //this.checkAuthentication(); // Check auth state on service initialization
   }
 
   login(username: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, { username, password });
+    return this.http.post(`${this.apiUrl}/login`, { username, password }, { withCredentials: true }).pipe(
+      tap(() => this.isAuthenticatedSubject.next(true)) // Update local auth state
+    );
+  }
+
+  logout(): Observable<any> {
+    return this.http.post(`${this.apiUrl}/logout`, {}, { withCredentials: true }).pipe(
+      tap(() => this.isAuthenticatedSubject.next(false))
+    );
   }
 
   register(username: string, email: string, password: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, { username, email, password });
   }
 
-  logout(): void {
-    this.tokenService.removeToken();
-    console.log('Token removed, updating isAuthenticatedSubject...');
-    this.isAuthenticatedSubject.next(false); // Notify subscribers of logout
+  isAuthenticated(): Observable<boolean> {
+    return this.http.get<boolean>(`${this.apiUrl}/authenticated`, { withCredentials: true }).pipe(
+      tap((isAuthenticated) => this.isAuthenticatedSubject.next(isAuthenticated))
+    );
   }
 
-  isAuthenticated(): boolean {
-    return this.isTokenValid(); // Simply check the token validity
+  private checkAuthentication(): void {
+    console.log('checkAuthentication triggered');
+    this.isAuthenticated().subscribe({
+      error: (err) => {
+        console.error('Failed to check authentication:', err);
+        this.isAuthenticatedSubject.next(false);
+      },
+    });
   }
 
-  private isTokenValid(): boolean {
-    return !this.tokenService.isTokenExpired();
-  }
 
   resetPassword(email: string): Observable<any> {
     return this.http.post(`${this.emailUrl}/reset-password`, { email });

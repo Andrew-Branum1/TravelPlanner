@@ -1,19 +1,36 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { TokenService } from '../services/token.service';
+import { Observable } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
-  const tokenService = inject(TokenService);
   const router = inject(Router);
 
-  // Check if the user is authenticated and the token is not expired
-  if (authService.isAuthenticated() && !tokenService.isTokenExpired()) {
-    return true; // Allow access
+  // Check for public routes
+  if (route.data?.['public']) {
+    console.log(`Public route accessed: ${state.url}`);
+    return true; // Allow access to public routes
   }
 
-  // Redirect to login if not authenticated or token expired
-  router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
-  return false;
+  // Return an observable that resolves true/false based on authentication
+  console.log(`Protected route accessed: ${state.url}`);
+  return authService.isAuthenticated().pipe(
+    map((isAuthenticated) => {
+      console.log(`Authentication status: ${isAuthenticated}`);
+      if (isAuthenticated) {
+        return true; // Allow access
+      } else {
+        router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+        return false; // Deny access
+      }
+    }),
+    catchError(() => {
+      // Handle error by redirecting to login
+      console.log(`Error occurred while checking authentication.`);
+      router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+      return [false]; // Deny access
+    })
+  );
 };

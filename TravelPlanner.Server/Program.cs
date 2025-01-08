@@ -7,6 +7,7 @@ using TravelPlanner.Server.Data;
 using TravelPlanner.Server.Filters;
 using TravelPlanner.Server.Services.Interfaces;
 using TravelPlanner.Server.Services;
+using TravelPlanner.Server.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,16 +33,10 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins("http://localhost:4200")
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
-
-builder.Services.AddControllers(options =>
-{
-    options.Filters.Add<ValidationFilter>(); // Use custom validation filter
-});
-
-
 
 builder.WebHost.ConfigureKestrel(options =>
 {
@@ -52,6 +47,10 @@ builder.WebHost.ConfigureKestrel(options =>
     });
 });
 
+// Consolidate configurations
+var jwtSecret = builder.Configuration["JwtSettings:SecretKey"];
+if (string.IsNullOrEmpty(jwtSecret))
+    throw new ArgumentNullException(nameof(jwtSecret), "JWT Secret Key is not configured.");
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -59,9 +58,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("YourVeryLongSuperSecureSecretKey123!")),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSecret)),
             ValidateIssuer = false,
-            ValidateAudience = false
+            ValidateAudience = false,
+            ClockSkew = TimeSpan.Zero // No delay for token expiration
+        };
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                if (context.Request.Cookies.ContainsKey("authToken"))
+                {
+                    context.Token = context.Request.Cookies["authToken"];
+                }
+                return Task.CompletedTask;
+            }
         };
     });
 
@@ -69,7 +80,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
-
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 
 builder.Logging.ClearProviders();
@@ -93,12 +104,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+//app.UseMiddleware<TokenValidationMiddleware>();
 
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
-
 app.MapFallbackToFile("/index.html");
 
 app.Run();

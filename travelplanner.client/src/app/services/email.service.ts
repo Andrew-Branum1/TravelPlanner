@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { TokenService } from './token.service';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +8,7 @@ import { TokenService } from './token.service';
 export class EmailService {
   private readonly emailUrl = '/api/emails';
 
-  constructor(private http: HttpClient, private tokenService: TokenService) { }
+  constructor(private http: HttpClient) { }
 
   resetPassword(email: string): Observable<any> {
     return this.http.post(`${this.emailUrl}/send-reset-password`, { email });

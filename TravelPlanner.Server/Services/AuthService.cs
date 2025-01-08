@@ -13,16 +13,12 @@
     public class AuthService : IAuthService
     {
         private readonly ApplicationDbContext _context;
-        private readonly string _jwtSecret;
+        private readonly ITokenService _tokenService;
 
-        public AuthService(ApplicationDbContext context, IConfiguration configuration)
+        public AuthService(ApplicationDbContext context, ITokenService tokenService)
         {
             _context = context;
-            _jwtSecret = configuration["JwtSettings:SecretKey"];
-            if (string.IsNullOrEmpty(_jwtSecret))
-            {
-                throw new ArgumentNullException(nameof(_jwtSecret), "JWT Secret Key is not configured.");
-            }
+            _tokenService = tokenService;
         }
 
         public async Task<User> AuthenticateUserAsync(string username, string password)
@@ -37,16 +33,7 @@
 
         public string GenerateJwtToken(User user)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_jwtSecret);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, user.Username) }),
-                Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            return _tokenService.CreateToken(user.Username);
         }
 
         public async Task<bool> RegisterUserAsync(RegisterDto dto)
@@ -68,5 +55,6 @@
             return true;
         }
     }
+
 
 }

@@ -3,7 +3,6 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
-import { TokenService } from '../../services/token.service';
 
 @Component({
   selector: 'app-login',
@@ -17,27 +16,29 @@ export class LoginComponent {
   isLoading = false;
   hidePassword = true;
 
-  constructor(private notificationService: NotificationService, private authService: AuthService, private tokenService: TokenService, private router: Router, private route: ActivatedRoute) { }
+  constructor(private notificationService: NotificationService, private authService: AuthService, private router: Router, private route: ActivatedRoute) { }
 
-  onSubmit(event: Event): void {
-    event.preventDefault();
-    this.login();
+
+  ngOnInit(): void {
+    console.log('LoginComponent initialized');
   }
 
-  login(): void {
+  onSubmit(): void {
+    if (!this.username || !this.password) {
+      this.notificationService.showError('Username and password are required.');
+      return;
+    }
+
     this.isLoading = true;
     this.authService.login(this.username, this.password).subscribe({
-      next: (response) => {
+      next: () => {
         this.notificationService.showSuccess('Login successful!');
-        this.tokenService.setToken(response.token);
-        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-        this.router.navigate([returnUrl]);
-        this.isLoading = false;
+        this.router.navigate(['/home']);
       },
       error: (err) => {
         this.notificationService.showError(err.error?.message || 'Login failed.');
-        this.isLoading = false;
-      }
+      },
+      complete: () => (this.isLoading = false),
     });
   }
 

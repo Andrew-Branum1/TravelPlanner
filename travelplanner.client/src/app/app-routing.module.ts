@@ -16,21 +16,20 @@ const routes: Routes = [
     component: LayoutComponent,
     children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' }, // Default redirect
-      { path: 'home', component: HomeComponent }, // Public home page
+      { path: 'home', component: HomeComponent, data: { public: true } }, // Public home page
       { path: 'flights', component: FlightComponent, canActivate: [authGuard] }, // Protected route
     ],
   },
 
   // Standalone routes (no LayoutComponent)
-  { path: 'login', component: LoginComponent }, // Login page
-  { path: 'register', component: RegisterComponent }, // Registration page
-  { path: 'reset-password', component: ResetPasswordComponent }, // Password reset
-  { path: 'confirm-reset-password', component: ConfirmResetPasswordComponent }, // Confirm reset
+  { path: 'login', component: LoginComponent, data: { public: true } }, // Login page
+  { path: 'register', component: RegisterComponent, data: { public: true } }, // Registration page
+  { path: 'reset-password', component: ResetPasswordComponent, data: { public: true } }, // Password reset
+  { path: 'confirm-reset-password', component: ConfirmResetPasswordComponent, data: { public: true } }, // Confirm reset
 
   // Wildcard route for 404
   { path: '**', redirectTo: 'home' }, // Redirect unknown routes to home
 ];
-
 
 
 @NgModule({
