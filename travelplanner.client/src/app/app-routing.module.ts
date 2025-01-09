@@ -8,6 +8,8 @@ import { authGuard } from './guards/auth.guard';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { ConfirmResetPasswordComponent } from './components/confirm-reset-password/confirm-reset-password.component';
 import { LayoutComponent } from './components/layout/layout.component';
+import { EmailConfirmationComponent } from './components/email-confirmation/email-confirmation.component';
+import { EmailSentComponent } from './components/email-sent/email-sent.component';
 
 const routes: Routes = [
   // Routes that use the LayoutComponent
@@ -25,7 +27,9 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent, data: { public: true } }, // Login page
   { path: 'register', component: RegisterComponent, data: { public: true } }, // Registration page
   { path: 'reset-password', component: ResetPasswordComponent, data: { public: true } }, // Password reset
-  { path: 'confirm-reset-password', component: ConfirmResetPasswordComponent, data: { public: true } }, // Confirm reset
+  { path: 'confirm-reset-password', component: ConfirmResetPasswordComponent, data: { public: true } },
+  { path: 'verify-email', component: EmailConfirmationComponent, data: { public: true } }, // Confirm reset
+  { path: 'email-sent', component: EmailSentComponent, data: { public: true } },
 
   // Wildcard route for 404
   { path: '**', redirectTo: 'home' }, // Redirect unknown routes to home

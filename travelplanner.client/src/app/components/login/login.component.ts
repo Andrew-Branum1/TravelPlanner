@@ -36,7 +36,11 @@ export class LoginComponent {
         this.router.navigate(['/home']);
       },
       error: (err) => {
-        this.notificationService.showError(err.error?.message || 'Login failed.');
+        if (err.error?.message === 'Email not verified.') {
+          this.notificationService.showError('Please verify your email before logging in.');
+        } else {
+          this.notificationService.showError(err.error?.message || 'Login failed.');
+        }
       },
       complete: () => (this.isLoading = false),
     });

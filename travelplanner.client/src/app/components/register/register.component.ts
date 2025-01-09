@@ -63,8 +63,9 @@ export class RegisterComponent {
     this.isLoading = true;
     this.authService.register(this.username, this.email, this.password).subscribe({
       next: () => {
+        localStorage.setItem('email', this.email);
         this.notificationService.showSuccess('Registration successful!');
-        this.router.navigate(['/login']);
+        this.router.navigate(['/email-sent'], { queryParams: { email: this.email } });
         this.isLoading = false;
       },
       error: (err) => {

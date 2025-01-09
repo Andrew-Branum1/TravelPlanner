@@ -1,0 +1,7 @@
+<div *ngIf="isLoading">
+  <p>Verifying your email...</p>
+</div>
+<div *ngIf="!isLoading">
+  <p>{{ message }}</p>
+  <a *ngIf="message.includes('successfully')" routerLink="/login">Go to Login</a>
+</div>

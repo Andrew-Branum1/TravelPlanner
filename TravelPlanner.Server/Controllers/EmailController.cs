@@ -78,5 +78,24 @@ namespace TravelPlanner.Server.Controllers
 
             return Ok(new { message = "Password has been reset successfully." });
         }
+
+        [HttpPost("resend-verification-email")]
+        public async Task<IActionResult> ResendVerificationEmail([FromBody] ResendVerificationRequestDto request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Email))
+            {
+                return BadRequest(new { message = "Email is required." });
+            }
+
+            var user = await _userService.FindByEmailAsync(request.Email);
+            if (user == null || user.IsEmailVerified)
+            {
+                return BadRequest(new { message = "User not found or already verified." });
+            }
+
+            await _emailService.SendVerificationEmailAsync(request.Email);
+            return Ok(new { message = "Verification email resent." });
+        }
+
     }
 }

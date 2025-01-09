@@ -14,11 +14,13 @@
     {
         private readonly ApplicationDbContext _context;
         private readonly ITokenService _tokenService;
+        private readonly IEmailService _emailService;
 
-        public AuthService(ApplicationDbContext context, ITokenService tokenService)
+        public AuthService(ApplicationDbContext context, ITokenService tokenService, IEmailService emailService)
         {
             _context = context;
             _tokenService = tokenService;
+            _emailService = emailService;
         }
 
         public async Task<User> AuthenticateUserAsync(string username, string password)
@@ -27,6 +29,10 @@
             if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
             {
                 return null;
+            }
+            if (!user.IsEmailVerified)
+            {
+                throw new UnauthorizedAccessException("Email not verified.");
             }
             return user;
         }
@@ -43,17 +49,26 @@
                 return false;
             }
 
+            var verificationToken = Guid.NewGuid().ToString();
+
             var user = new User
             {
                 Username = dto.Username,
                 Email = dto.Email,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.PasswordHash)
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+                VerificationToken = verificationToken,
+                VerificationTokenExpires = DateTime.UtcNow.AddHours(24),
+                IsEmailVerified = false
             };
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
+
+            await _emailService.SendVerificationEmailAsync(dto.Email);
+
             return true;
         }
+
     }
 
 

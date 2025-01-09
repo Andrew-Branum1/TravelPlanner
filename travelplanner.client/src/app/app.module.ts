@@ -30,6 +30,8 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
 import { ConfirmResetPasswordComponent } from './components/confirm-reset-password/confirm-reset-password.component'; // Import MatCardModule
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { LayoutComponent } from './components/layout/layout.component';
+import { EmailConfirmationComponent } from './components/email-confirmation/email-confirmation.component';
+import { EmailSentComponent } from './components/email-sent/email-sent.component';
 
 
 
@@ -42,7 +44,9 @@ import { LayoutComponent } from './components/layout/layout.component';
     RegisterComponent,
     ResetPasswordComponent,
     ConfirmResetPasswordComponent,
-    LayoutComponent
+    LayoutComponent,
+    EmailConfirmationComponent,
+    EmailSentComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,

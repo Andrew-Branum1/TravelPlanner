@@ -50,6 +50,9 @@ export class AuthService {
     });
   }
 
+  confirmEmail(email: string, token: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/confirm-email`, { email, token });
+  }
 
   resetPassword(email: string): Observable<any> {
     return this.http.post(`${this.emailUrl}/reset-password`, { email });
@@ -58,4 +61,9 @@ export class AuthService {
   confirmResetPassword(email: string, token: string, newPassword: string): Observable<any> {
     return this.http.post(`${this.emailUrl}/confirm-reset-password`, { email, token, newPassword });
   }
+
+  resendVerificationEmail(email: string): Observable<any> {
+    return this.http.post(`${this.emailUrl}/resend-verification-email`, { email });
+  }
+
 }

@@ -47,18 +47,13 @@
                 throw new ArgumentException("User not found.");
             }
 
-            var verificationToken = Guid.NewGuid().ToString();
-            user.VerificationToken = verificationToken;
-            user.VerificationTokenExpires = DateTime.UtcNow.AddHours(1);
-
-            await _userService.UpdateUserAsync(user);
-
-            var verificationUrl = $"http://localhost:4200/verify-email?token={verificationToken}";
+            var verificationUrl = $"http://localhost:4200/verify-email?token={user.VerificationToken}&email={email}";
             var subject = "Email Verification";
             var body = $"Click here to verify your email address:\n{verificationUrl}";
 
             await _emailSender.SendEmailAsync(email, subject, body);
         }
+
     }
 
 
